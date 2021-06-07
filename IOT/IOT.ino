@@ -5,6 +5,10 @@
 #include <string>
 #include "purifier.h"
 
+#define D1 5
+#define D2 4
+#define D0 0
+
 #define DELAY_MS1 60000
 #define DELAY_MS2 1000
 
@@ -48,7 +52,11 @@ void setup() {
 
     delay(100);
     s_udp.begin(54320);
-    
+
+    pinMode(D1, OUTPUT);
+    pinMode(D2, OUTPUT);
+    pinMode(D0, OUTPUT);
+    analogWrite(D0,500);  
 }
 
 void loop() {
@@ -78,9 +86,7 @@ void loop() {
             
             Serial.printf("현재 pm10Grade는 : %s입니다\r\n",pm10Grade);
             Serial.printf("pm25Grade는 %s입니다.\r\n",pm25Grade);
-            
-            Serial.println(pm10Grade);
-            Serial.println(pm25Grade);
+
             last_level = atoi(pm10Grade);
             level = 3*last_level;
             flag =1;
@@ -109,8 +115,26 @@ void loop() {
         count++;
       }
       
-      if(count ==22)
+      if(count == 22)
       {
+        if(last_level > 2)
+        {
+            analogWrite(D0,500);  
+            digitalWrite(D1,HIGH);
+            digitalWrite(D2,LOW);
+            delay(1000);
+            analogWrite(D0,0);  
+        }
+        
+        else if(last_level <= 2)
+        {
+            analogWrite(D0,500);  
+            digitalWrite(D1,LOW);
+            digitalWrite(D2,HIGH);
+            delay(1000);
+            analogWrite(D0,0);  
+        }
+      
         count=0;
         flag=0;
       }     
