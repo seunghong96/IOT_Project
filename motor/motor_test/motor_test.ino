@@ -10,7 +10,7 @@ void setup() {
 
 void loop() 
 {
-  analogWrite(D0,500);  
+  analogWrite(D0,1000);  
   digitalWrite(D1,HIGH);
   digitalWrite(D2,LOW);
   delay(1000);

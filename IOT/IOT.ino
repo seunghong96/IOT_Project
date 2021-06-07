@@ -55,8 +55,7 @@ void setup() {
 
     pinMode(D1, OUTPUT);
     pinMode(D2, OUTPUT);
-    pinMode(D0, OUTPUT);
-    analogWrite(D0,500);  
+    pinMode(D0, OUTPUT); 
 }
 
 void loop() {
@@ -119,7 +118,7 @@ void loop() {
     
     if(flag == 1)
     { 
-      level = 3*last_level;
+      level = 7000000000*last_level;
       handle_purifier(s_udp, s_purifier_ip, s_token,level);
       
       if(millis()-lastflagMs> DELAY_MS2)
@@ -132,7 +131,7 @@ void loop() {
       {
         if(last_level > 2)
         {
-            analogWrite(D0,500);  
+            analogWrite(D0,1000);  
             digitalWrite(D1,HIGH);
             digitalWrite(D2,LOW);
             delay(1000);
@@ -141,7 +140,7 @@ void loop() {
         
         else if(last_level <= 2)
         {
-            analogWrite(D0,500);  
+            analogWrite(D0,1000);  
             digitalWrite(D1,LOW);
             digitalWrite(D2,HIGH);
             delay(1000);
