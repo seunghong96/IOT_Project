@@ -285,6 +285,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
     {
         state = PuriferCommunicationState::DiscoverSend;
         run_time = millis() + 20000;
+                Serial.println("Start");
+
         break;
     }
     case PuriferCommunicationState::DiscoverSend:
@@ -292,6 +294,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
         schedule_discover(udp, ip);
         wait_cnt = 100;
         state = PuriferCommunicationState::DiscoverGet;
+                Serial.println("DiscoverSend");
+
         break;
     }
     case PuriferCommunicationState::DiscoverGet:
@@ -315,6 +319,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
                 state = PuriferCommunicationState::Start;
                 break;
         }
+                Serial.println("DiscoverGet");
+
         break;
     }
     case PuriferCommunicationState::AQISend:
@@ -322,6 +328,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
         send_cmd("get_prop", "aqi", device_id, ts, ++id, token, udp, ip);
         wait_cnt = 100;
         state = PuriferCommunicationState::AQIGet;
+                Serial.println("AQISend");
+
         break;
     }
     case PuriferCommunicationState::AQIGet:
@@ -345,6 +353,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
                 state = PuriferCommunicationState::Start;
                 break;
         }
+                Serial.println("AQIGet");
+
         break;
     }
     case PuriferCommunicationState::LevelSend:
@@ -362,6 +372,8 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
         send_cmd("set_level_favorite", static_cast<int>(level), device_id, ts, ++id, token, udp, ip);//여기
         wait_cnt = 100;
         state = PuriferCommunicationState::LevelGet;
+                Serial.println("LevelSend");
+
         break;
     }
     case PuriferCommunicationState::LevelGet:
@@ -389,6 +401,7 @@ void handle_purifier(WiFiUDP& udp, IPAddress& ip, const hex_t& _token, int level
                 state = PuriferCommunicationState::Start;
                 break;
         }
+        Serial.println("LevelGet");
         break;
     }
     default:

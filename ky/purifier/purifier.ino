@@ -11,7 +11,7 @@ IPAddress s_purifier_ip(192,168,50,11);
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
     delay(100);
 
     Serial.print("Connecting to ");
@@ -39,6 +39,6 @@ void loop()
 {
    // level = 1;
    // handle_purifier(s_udp, s_purifier_ip, s_token,level);
-    level = 14;
+    level = 1;
     handle_purifier(s_udp, s_purifier_ip, s_token,level);
 }
