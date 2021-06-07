@@ -18,14 +18,14 @@ HTTPClient http; // HTTP 클라이언트 객체
 DynamicJsonDocument test(2048);
 IPAddress s_purifier_ip(192,168,50,11);
 
-const std::string s_token = "9fa924eb745032c50274714b657b928d";
+const std::string s_token = "70f3fb848009bd8cec7dad45ae036ba0";
 String key = "824nEXFPA5w%2BbQStRUNDo2QiDycTMUY39F9nb5Xe%2F3%2FyPg8BNA08g28qgzf1eMKqubBggebiXgd0i0OIXgr2eg%3D%3D";  //인코딩 된 값 그대로 넣으면됨
 String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=824nEXFPA5w%2BbQStRUNDo2QiDycTMUY39F9nb5Xe%2F3%2FyPg8BNA08g28qgzf1eMKqubBggebiXgd0i0OIXgr2eg%3D%3D&returnType=json&numOfRows=1&pageNo=1&stationName=%EA%B9%80%EB%9F%89%EC%9E%A5%EB%8F%99&dataTerm=DAILY&ver=1.0";
 
 unsigned long long lastairkoreaMs=0;
 unsigned long long lastflagMs=0;
 unsigned long long purifier_run_time=0;
-int last_level,level;
+int last_level,level,previous_level;
 int flag =0;
 int count =0;    
 
@@ -88,8 +88,20 @@ void loop() {
             Serial.printf("pm25Grade는 %s입니다.\r\n",pm25Grade);
 
             last_level = atoi(pm10Grade);
-            level = 3*last_level;
-            flag =1;
+            
+            Serial.printf("Before\nlast_level : %d\n",last_level);
+            Serial.printf("previous_level : %d\n",previous_level);   
+
+            if(last_level != previous_level)  flag =1;
+            else flag =0;
+
+            previous_level = atoi(pm10Grade);
+            
+            Serial.printf("After\nlast_level : %d\n",last_level);
+            Serial.printf("previous_level : %d\n",previous_level);   
+
+            Serial.printf("flag : %d\n",flag);
+        
           }
         } 
         else 
@@ -106,7 +118,8 @@ void loop() {
 
     
     if(flag == 1)
-    {  
+    { 
+      level = 3*last_level;
       handle_purifier(s_udp, s_purifier_ip, s_token,level);
       
       if(millis()-lastflagMs> DELAY_MS2)
