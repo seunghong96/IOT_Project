@@ -5,7 +5,8 @@
 #include <string>
 #include "purifier.h"
 
-#define DELAY_MS1 600000
+#define DELAY_MS1 60000
+#define DELAY_MS2 1000
 
 WiFiClient client; // 와이파이 클라이언트 객체
 WiFiUDP s_udp;
@@ -18,8 +19,11 @@ String key = "824nEXFPA5w%2BbQStRUNDo2QiDycTMUY39F9nb5Xe%2F3%2FyPg8BNA08g28qgzf1
 String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?serviceKey=824nEXFPA5w%2BbQStRUNDo2QiDycTMUY39F9nb5Xe%2F3%2FyPg8BNA08g28qgzf1eMKqubBggebiXgd0i0OIXgr2eg%3D%3D&returnType=json&numOfRows=1&pageNo=1&stationName=%EA%B9%80%EB%9F%89%EC%9E%A5%EB%8F%99&dataTerm=DAILY&ver=1.0";
 
 unsigned long long lastairkoreaMs=0;
+unsigned long long lastflagMs=0;
 unsigned long long purifier_run_time=0;
-int level;
+int last_level,level;
+int flag =0;
+int count =0;    
 
 void setup() {
     Serial.begin(115200);
@@ -77,8 +81,9 @@ void loop() {
             
             Serial.println(pm10Grade);
             Serial.println(pm25Grade);
-            level = atoi(pm10Grade);
-            level = 3*level;
+            last_level = atoi(pm10Grade);
+            level = 3*last_level;
+            flag =1;
           }
         } 
         else 
@@ -90,24 +95,24 @@ void loop() {
       else 
       {
         Serial.printf("[HTTP] 접속 불가\n");
-      }
-  
-      Serial.printf("end\n");
-      
-    Serial.printf("%d\n",level);
-    
+      }  
     }
+
     
-    purifier_run_time = millis();
-    
-    if((millis()-purifier_run_time) < 210000) 
-    handle_purifier(s_udp, s_purifier_ip, s_token,level);
-        
-    /*
-    while(1)
-    {    
-      if((millis()-purifier_run_time) == 210000) break;
+    if(flag == 1)
+    {  
       handle_purifier(s_udp, s_purifier_ip, s_token,level);
+      
+      if(millis()-lastflagMs> DELAY_MS2)
+      {
+        lastflagMs =millis(); 
+        count++;
+      }
+      
+      if(count ==22)
+      {
+        count=0;
+        flag=0;
+      }     
     }
-    */
 }
